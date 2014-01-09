@@ -74,7 +74,7 @@ static CGFloat const InitialBarWidthIpad = 60.0f;
     
     *xAxisStepWidth = (self.frame.size.width-3*AxisPadding)/(*maxXAxisPointCount);
     
-    *yAxisScale = MAX(self.frame.size.height-2*AxisPadding, (self.frame.size.height-2*AxisPadding)/(*maxYPoint));
+    *yAxisScale = MIN(1, (self.frame.size.height-4*AxisPadding)/(*maxYPoint));
 }
 
 - (void)drawRect:(CGRect)rect {
@@ -111,17 +111,17 @@ static CGFloat const InitialBarWidthIpad = 60.0f;
     NSUInteger yAxisTicks = 6;
     NSUInteger step = (NSUInteger)lroundf(maxYPoint/yAxisTicks);
     for (NSInteger i = 0; i < yAxisTicks; i++) {
-        CGContextMoveToPoint(context, xAxisStartPoint, (yAxisHeight/6)*(i+1));
-        CGContextAddLineToPoint(context, xAxisStartPoint+xAxisWidth-2*AxisPadding, (yAxisHeight/6)*(i+1));
+        CGContextMoveToPoint(context, xAxisStartPoint, (yAxisHeight/yAxisTicks)*(i+1));
+        CGContextAddLineToPoint(context, xAxisStartPoint+xAxisWidth-2*AxisPadding, (yAxisHeight/yAxisTicks)*(i+1));
         CGContextStrokePath(context);
         
-        // Scale
+        // Steps
         UILabel *increment = [[UILabel alloc] init];
         increment.text = [@(step*(yAxisTicks-i-1)) stringValue];
         increment.font = [UIFont fontWithName:@"OpenSans" size:8.0f];
         increment.textColor = [WPStyleGuide allTAllShadeGrey];
         [increment sizeToFit];
-        increment.center = CGPointMake(xAxisStartPoint-CGRectGetMidX(increment.frame)-6.0f, (yAxisHeight/6)*(i+1));
+        increment.center = CGPointMake(xAxisStartPoint-CGRectGetMidX(increment.frame)-6.0f, (yAxisHeight/yAxisTicks)*(i+1));
         [self addSubview:increment];
     }
     
@@ -139,17 +139,18 @@ static CGFloat const InitialBarWidthIpad = 60.0f;
         UILabel *legendName = [[UILabel alloc] init];
         legendName.text = category;
         legendName.font = [WPStyleGuide subtitleFont];
-        legendName.textColor = [WPStyleGuide littleEddieGrey];
+        legendName.textColor = [WPStyleGuide allTAllShadeGrey];
         [legendName sizeToFit];
         legendXOffset = legendXOffset - CGRectGetMaxX(legendName.frame);
         CGRect f = legendName.frame; f.origin.x = legendXOffset;
-        f.origin.y = AxisPadding/2 - legendName.frame.size.height/2;
+        f.origin.y = AxisPadding/2;
         legendName.frame = f;
         [self addSubview:legendName];
+        CGFloat iconWidth = legendName.frame.size.height - 3.0f;
         CGContextSetFillColorWithColor(context, categoryColor);
-        legendXOffset -= 20.0f;
-        CGContextFillRect(context, CGRectMake(legendXOffset, AxisPadding/2, 10.0f, 10.0f));
-        legendXOffset -= 25.0f;
+        legendXOffset -= iconWidth+5.0f;
+        CGContextFillRect(context, CGRectMake(legendXOffset, legendName.frame.origin.y+2.0f, iconWidth, iconWidth));
+        legendXOffset -= iconWidth + 15.0f;
         
         [points enumerateObjectsUsingBlock:^(NSDictionary *point, NSUInteger idx, BOOL *stop) {
             // Bar
@@ -188,7 +189,7 @@ static CGFloat const InitialBarWidthIpad = 60.0f;
 @implementation StatsViewsVisitorsBarGraphCell
 
 + (CGFloat)heightForRow {
-    return 200.0f;
+    return 250.0f;
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -207,8 +208,8 @@ static CGFloat const InitialBarWidthIpad = 60.0f;
     [self.barGraph addCategory:NSLocalizedString(@"Visitors", nil) color:[WPStyleGuide baseLighterBlue]];
     [self.barGraph setBarsWithCount:@[@{@"name": @"Day 1", @"count": @5},
                                  @{@"name": @"Day 2", @"count": @100},
-                                 @{@"name": @"Day 3", @"count": @150},
-                                 @{@"name": @"Day 4", @"count": @200},
+                                 @{@"name": @"Day 3", @"count": @1300},
+                                 @{@"name": @"Day 4", @"count": @300},
                                  @{@"name": @"Day 5", @"count": @90},
                                  @{@"name": @"Day 6", @"count": @70}] category:@"Visitors"];
     [self.barGraph setBarsWithCount:@[@{@"name": @"Day 1", @"count": @2},
