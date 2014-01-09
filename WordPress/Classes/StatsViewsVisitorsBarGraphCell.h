@@ -9,8 +9,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface StatsBarGraphCell : UITableViewCell
+@interface StatsViewsVisitorsBarGraphCell : UITableViewCell
 
 + (CGFloat)heightForRow;
+
+- (void)setGraphData:(NSDictionary *)graphData;
 
 @end
