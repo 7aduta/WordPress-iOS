@@ -22,8 +22,7 @@
 #import "StatsTitleCountItem.h"
 #import "StatsTodayYesterdayButtonCell.h"
 #import "StatsTwoColumnCell.h"
-#import "StatsGroupedCell.h"
-#import "StatsClickGroup.h"
+#import "StatsGroup.h"
 
 static NSString *const VisitorsUnitButtonCellReuseIdentifier = @"VisitorsUnitButtonCellReuseIdentifier";
 static NSString *const TodayYesterdayButtonCellReuseIdentifier = @"TodayYesterdayButtonCellReuseIdentifier";
@@ -93,7 +92,6 @@ typedef NS_ENUM(NSInteger, TotalFollowersShareRow) {
     [self.tableView registerClass:[StatsNoResultsCell class] forCellReuseIdentifier:NoResultsCellIdentifier];
     [self.tableView registerClass:[StatsTwoColumnCell class] forCellReuseIdentifier:ResultRowCellIdentifier];
     [self.tableView registerClass:[StatsViewsVisitorsBarGraphCell class] forCellReuseIdentifier:GraphCellIdentifier];
-    [self.tableView registerClass:[StatsGroupedCell class] forCellReuseIdentifier:StatsGroupedCellIdentifier];
     
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(refreshControlTriggered) forControlEvents:UIControlEventValueChanged];
